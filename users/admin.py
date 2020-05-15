@@ -1,19 +1,25 @@
 from django.contrib import admin
-from django.contrib.admin import register
-
-from .models import UserInfo, Role, Permission
+from .models import UserInfo, Role, Permission, Post
 
 
-@register(UserInfo)
+@admin.register(Post)
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+
+
+@admin.register(UserInfo)
 class UserInfoAdmin(admin.ModelAdmin):
     list_display = ['name', 'real_name', 'gender', 'telephone', 'is_superuser', 'is_active']
 
 
-@register(Permission)
+@admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
     list_display = ['name', 'path', 'level', 'parent', 'sort']
 
 
-@register(Role)
+@admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     list_display = ['name', 'only_own']
+
+
+

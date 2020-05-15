@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.contrib.auth.hashers import make_password, check_password
 
+
 class Post(models.Model):
     """用户类型"""
     id = models.IntegerField(verbose_name='编号', primary_key=True)

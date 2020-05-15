@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'wechatpy',
     'corsheaders',
     'users',
+    'wxchat',
 ]
 
 MIDDLEWARE = [
@@ -139,7 +142,30 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+#simple ui
+SIMPLEUI_DEFAULT_ICON = False
+SIMPLEUI_LOGIN_PARTICLES = True
+SIMPLEUI_ICON = {
+    '员工角色': 'fab fa-weixin',
+}
+SIMPLEUI_CONFIG = {
+    'menu_display': ['权限管理', '认证和授权', '微信管理'],
+    'dynamic': False,
+}
+
+# SIMPLEUI_HOME_PAGE = 'https://www.baidu.com'
+# SIMPLEUI_HOME_TITLE = '百度一下你就知道'
+# SIMPLEUI_HOME_ICON = 'fa fa-user'
+# SIMPLEUI_INDEX = 'https://www.88cto.com'
+SIMPLEUI_HOME_INFO = False
+# SIMPLEUI_HOME_QUICK = False
+# SIMPLEUI_HOME_ACTION = False
+SIMPLEUI_ANALYSIS = False   #收集分析
+SIMPLEUI_STATIC_OFFLINE = True
+# SIMPLEUI_LOADING = False
+# django cors
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
@@ -187,3 +213,14 @@ JWT_AUDIENCE = None
 JWT_ISSUER = None
 JWT_VERIFY_EXPIRATION = True
 JWT_AUTH_HEADER_PREFIX = 'JWT'
+# REDIS
+REDIS_URL = 'redis://127.0.0.1:6379/0'
+# WEIXIN
+WEB_URL = 'http://www.xzls.vip'
+WECHAT_TOKEN = 'xzls.vip@123'
+APP_URL = 'http://' + WEB_URL + '/wechat'
+ROOT_URL = 'http://' + WEB_URL
+WECHAT_APPID = 'wxbc591183c3175d16'
+WECHAT_SECRET = 'bc4925cf744e581f41e8ea3699c36176'
+MCH_ID = '152455231921'
+MCH_KEY = 'BE0EE67671564031714961E114AAFS77'
