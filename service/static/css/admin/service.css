@@ -1,0 +1,9 @@
+#id_address{
+    width: 55em!important;
+}
+#id_office_address {
+    width: 55em !important;
+}
+#id_sign_dat, #id_confirm_date, #id_success_date{
+    width: 55em !important;
+}

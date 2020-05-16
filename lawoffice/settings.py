@@ -26,7 +26,7 @@ SECRET_KEY = 'iv-1t#rtc4eq3l$^1$*0s9z#xig9e%yr%gqnydp(9q=s@1ju&o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'wechatpy',
     'corsheaders',
+    'service',
     'users',
     'wxchat',
+    'office',
 ]
 
 MIDDLEWARE = [
@@ -151,7 +153,7 @@ SIMPLEUI_ICON = {
     '员工角色': 'fab fa-weixin',
 }
 SIMPLEUI_CONFIG = {
-    'menu_display': ['权限管理', '认证和授权', '微信管理'],
+    # 'menu_display': ['权限管理', '认证和授权', '微信管理'],
     'dynamic': False,
 }
 
@@ -163,7 +165,7 @@ SIMPLEUI_HOME_INFO = False
 # SIMPLEUI_HOME_QUICK = False
 # SIMPLEUI_HOME_ACTION = False
 SIMPLEUI_ANALYSIS = False   #收集分析
-SIMPLEUI_STATIC_OFFLINE = True
+# SIMPLEUI_STATIC_OFFLINE = True
 # SIMPLEUI_LOADING = False
 # django cors
 CORS_ALLOW_CREDENTIALS = True

@@ -10,11 +10,15 @@ class RoleAdmin(admin.ModelAdmin):
 @admin.register(UserInfo)
 class UserInfoAdmin(admin.ModelAdmin):
     list_display = ['name', 'real_name', 'gender', 'telephone', 'is_superuser', 'is_active']
+    search_fields = ['name', 'real_name', 'telephone']
+    list_filter = ['is_superuser', 'is_active']
 
 
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
     list_display = ['name', 'path', 'level', 'parent', 'sort']
+    search_fields = ['name', 'path']
+    list_filter = ['level', 'parent']
 
 
 @admin.register(Role)
