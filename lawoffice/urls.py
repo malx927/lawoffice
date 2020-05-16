@@ -21,4 +21,5 @@ urlpatterns = [
     path('wechat/', include('wxchat.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('users/api/', include('users.api.urls')),
+    path('service/api/', include('service.api.urls')),
 ]

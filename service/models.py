@@ -3,6 +3,7 @@ from django.db import models
 
 class PersonInfo(models.Model):
     """客户信息"""
+    openid = models.CharField(verbose_name='微信ID', max_length=120)
     name = models.CharField(verbose_name='姓名', max_length=24)
     telephone = models.CharField(verbose_name='电话', max_length=32)
     id_card = models.CharField(verbose_name='身份证号', max_length=32)
@@ -20,6 +21,7 @@ class PersonInfo(models.Model):
 
 class CompanyInfo(models.Model):
     """公司信息"""
+    openid = models.CharField(verbose_name='微信ID', max_length=120)
     name = models.CharField(verbose_name='公司名称', max_length=64)
     credit_code = models.CharField(verbose_name='信用代码', max_length=24)
     address = models.CharField(verbose_name='公司地址', max_length=128)
@@ -41,6 +43,7 @@ class CompanyInfo(models.Model):
 class PrivateContract(models.Model):
     """私人律师服务合同"""
     code = models.CharField(verbose_name='合同编号', max_length=16)
+    person = models.ForeignKey(PersonInfo, verbose_name='客户id', on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(verbose_name='姓名', max_length=24)
     telephone = models.CharField(verbose_name='电话', max_length=32)
     id_card = models.CharField(verbose_name='身份证号', max_length=32)
@@ -69,6 +72,7 @@ class PrivateContract(models.Model):
 class CompanyContract(models.Model):
     """公司合同"""
     code = models.CharField(verbose_name='合同编号', max_length=16)
+    company = models.ForeignKey(CompanyInfo, verbose_name='公司ID', on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(verbose_name='公司名称', max_length=64)
     credit_code = models.CharField(verbose_name='信用代码', max_length=24)
     address = models.CharField(verbose_name='公司地址', max_length=128)
