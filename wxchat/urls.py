@@ -17,7 +17,7 @@ from django.urls import path
 from wxchat.views import wechat, createMenu, getMenu, deleteMenu
 
 urlpatterns = [
-    path('wechat/', wechat),  # 微信入口
+    path('', wechat),  # 微信入口
     path('createmenu/', createMenu),
     path('getmenu/', getMenu),
     path('delmenu/', deleteMenu),
