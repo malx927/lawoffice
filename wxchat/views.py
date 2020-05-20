@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import logging
 from django.shortcuts import render
 import time
@@ -9,7 +9,7 @@ import json
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from redis import Redis
-from wechatpy import WeChatClient, WeChatPay, parse_message
+from wechatpy import WeChatClient, WeChatPay, parse_message, WeChatOAuth
 from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.replies import TransferCustomerServiceReply, ImageReply, VoiceReply, create_reply
 from wechatpy.session.redisstorage import RedisStorage
@@ -156,7 +156,7 @@ def createMenu(request):
             {
                 "type": "view",
                 "name": "律师服务",
-                "url": settings.ROOT_URL + "/lawyer/"
+                "url": settings.ROOT_URL + "/#/about/"
             },
             # {
             #     "type": "view",
@@ -192,3 +192,27 @@ def getMenu(request):
     resp = client.menu.get()
     return HttpResponse(json.dumps(resp, ensure_ascii=False))
 
+
+def getWechatAuth(request):
+    code = request.GET.get('code', None)
+    if code is None:  # 获取授权码code
+        redirect_url = '%s://%s%s' % (request.scheme, request.get_host(), request.get_full_path())
+        webchatOAuth = WeChatOAuth(settings.WECHAT_APPID, settings.WECHAT_SECRET, redirect_url, 'snsapi_userinfo')
+        authorize_url = webchatOAuth.authorize_url
+        print(authorize_url)
+        return HttpResponseRedirect(authorize_url)
+    else:  # 同意授权，通过授权码获取ticket,根据ticket拉取用户信息
+        webchatOAuth = WeChatOAuth(settings.WECHAT_APPID, settings.WECHAT_SECRET, '', 'snsapi_userinfo')
+        res = webchatOAuth.fetch_access_token(code)
+        if 'errcode' in res:
+            return HttpResponse(json.dumps(res))
+        else:
+            open_id = webchatOAuth.open_id
+            userinfo = webchatOAuth.get_user_info()
+            userinfo.pop('privilege')
+            obj, created = WxUserInfo.objects.update_or_create(openid=open_id, defaults=userinfo)
+            print('-------------', obj, created)
+            data = {
+                'openid': open_id
+            }
+            return HttpResponse(json.dumps(data))

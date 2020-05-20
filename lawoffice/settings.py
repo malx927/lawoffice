@@ -171,7 +171,9 @@ SIMPLEUI_ANALYSIS = False   #收集分析
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:8000',
+    # 'http://127.0.0.1:8080',
+    # 'http://127.0.0.1:8001',
+    # 'http://mlx.wx.xzls.vip',
 )
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -195,6 +197,7 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'Pragma',
+    'openid'
 )
 
 REST_FRAMEWORK = {
@@ -220,8 +223,8 @@ REDIS_URL = 'redis://127.0.0.1:6379/0'
 # WEIXIN
 WEB_URL = 'http://mlx.wx.xzls.vip'
 WECHAT_TOKEN = 'xzls.vip@123'
-APP_URL = 'http://' + WEB_URL + '/wechat'
-ROOT_URL = 'http://' + WEB_URL
+APP_URL = WEB_URL + '/wechat'
+ROOT_URL = WEB_URL
 WECHAT_APPID = 'wxaa79b519a7a6da29'
 WECHAT_SECRET = 'f50e6d8f12f00517304f4d164a88b1ec'
 MCH_ID = '152455231921'

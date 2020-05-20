@@ -18,8 +18,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('wechat/', include('wxchat.urls')),
+    path('api/wechat/', include('wxchat.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('users/api/', include('users.api.urls')),
-    path('service/api/', include('service.api.urls')),
+    path('api/users/', include('users.api.urls')),
+    path('api/service/', include('service.api.urls')),
 ]

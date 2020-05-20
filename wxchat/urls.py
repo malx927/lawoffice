@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from wxchat.views import wechat, createMenu, getMenu, deleteMenu
+from wxchat.views import wechat, createMenu, getMenu, deleteMenu, getWechatAuth
 
 urlpatterns = [
     path('', wechat),  # 微信入口
-    path('createmenu/', createMenu),
-    path('getmenu/', getMenu),
-    path('delmenu/', deleteMenu),
+    path('createmenu/', createMenu, name='wxchat-create-menu'),
+    path('getmenu/', getMenu, name='wxchat-get-menu'),
+    path('delmenu/', deleteMenu, name='wxchat-delete-menu'),
+    path('get_token_openid/', getWechatAuth, name='wxchat-get-openid'),
 ]

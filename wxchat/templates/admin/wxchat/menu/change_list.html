@@ -77,11 +77,73 @@
     {% endblock %}
 
     <div id="content-main">
-        <button type="button" class="el-button el-button--primary" name="create_menu"><i class="el-icon-circle-plus-outline"></i><span>创建菜单</span></button>
-        <button type="button" class="el-button el-button--primary" name="search_menu"><i class="el-icon-search"></i><span>查询菜单</span></button>
-        <button type="button" class="el-button el-button--danger" name="delete_menu"><i class="el-icon-delete"></i><span>删除菜单</span></button>
+        <button type="button" class="el-button el-button--primary" id="id_create_menu"><i class="el-icon-circle-plus-outline"></i><span>创建菜单</span></button>
+        <button type="button" class="el-button el-button--primary" id="id_search_menu"><i class="el-icon-search"></i><span>查询菜单</span></button>
+        <button type="button" class="el-button el-button--danger" id="id_delete_menu"><i class="el-icon-delete"></i><span>删除菜单</span></button>
+    </div>
+    <div id="id_menu" style="padding:20px;">
+
     </div>
     <script type="text/javascript">
+        $(function(){
+            $("#id_create_menu").click(function () {
+                $.ajax({
+                  type: 'GET',
+                  url: "{% url 'wxchat-create-menu' %}",
+                  dataType: 'json',
+                  timeout: 5000,
+                  success: function(data){
+                    console.log(JSON.stringify(data));
+                    if(data.errcode === 0) {
+                        alert("创建成功")
+                    }
+                  },
+                  error: function(xhr, type,error){
+                      console.log(type);
+                  }
+                });
+            });
+            $("#id_search_menu").click(function () {
+                $.ajax({
+                      type: 'GET',
+                      url: "{% url 'wxchat-get-menu' %}",
+                      dataType: 'json',
+                      timeout: 5000,
+                      success: function(data){
+                        console.log(JSON.stringify(data));
+                        if(data != null){
+                            $.each(data.menu.button, function (index, item) {
+                                $("#id_menu").children('p').remove();
+                                $("#id_menu").append('<p>' + item.name + ':' + item.url + '</p>')
 
+                            });
+                        }else{
+                             $("#id_menu").children('p').remove();
+                        }
+
+                      },
+                      error: function(xhr, type,error){
+                          console.log(type);
+                      }
+                });
+            });
+            $("#id_delete_menu").click(function () {
+                $.ajax({
+                      type: 'GET',
+                      url: "{% url 'wxchat-delete-menu' %}",
+                      dataType: 'json',
+                      timeout: 5000,
+                      success: function(data){
+                        console.log(JSON.stringify(data));
+                        if(data.errcode === 0) {
+                            alert("删除成功")
+                        }
+                      },
+                      error: function(xhr, type,error){
+                          console.log(type);
+                      }
+                });
+            });
+        })
     </script>
 {% endblock %}
