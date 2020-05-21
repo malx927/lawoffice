@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 import logging
 from django.shortcuts import render
 import time
@@ -194,33 +194,37 @@ def getMenu(request):
     return HttpResponse(json.dumps(resp, ensure_ascii=False))
 
 
-@weixin_decorator
-def getWechatAuth(request, *args, **kwargs):
-    openid = kwargs["openid"]
-    print(openid)
-    data = {
-        'openid': openid
-    }
-    return HttpResponse(json.dumps(data))
-    # code = request.GET.get('code', None)
-    # if code is None:  # 获取授权码code
-    #     redirect_url = '%s%s' % (settings.WEB_URL, request.get_full_path())
-    #     print(redirect_url)
-    #     webchatOAuth = WeChatOAuth(settings.WECHAT_APPID, settings.WECHAT_SECRET, redirect_url, 'snsapi_userinfo')
-    #     authorize_url = webchatOAuth.authorize_url
-    #     return HttpResponseRedirect(authorize_url)
-    # else:  # 同意授权，通过授权码获取ticket,根据ticket拉取用户信息
-    #     webchatOAuth = WeChatOAuth(settings.WECHAT_APPID, settings.WECHAT_SECRET, '', 'snsapi_userinfo')
-    #     res = webchatOAuth.fetch_access_token(code)
-    #     if 'errcode' in res:
-    #         return HttpResponse(json.dumps(res))
-    #     else:
-    #         open_id = webchatOAuth.open_id
-    #         userinfo = webchatOAuth.get_user_info()
-    #         userinfo.pop('privilege')
-    #         obj, created = WxUserInfo.objects.update_or_create(openid=open_id, defaults=userinfo)
-    #         print('-------------', obj, created)
-    #         data = {
-    #             'openid': open_id
-    #         }
-    #         return HttpResponse(json.dumps(data))
+def getWechatAuthCode(request):
+    code = request.GET.get('code', None)
+    if code is None:  # 获取授权码code
+        url = request.GET.get('url', None)
+        redirect_url = url if url is not None else settings.WEB_URL
+        print(redirect_url)
+        webchatOAuth = WeChatOAuth(settings.WECHAT_APPID, settings.WECHAT_SECRET, redirect_url, 'snsapi_userinfo')
+        authorize_url = webchatOAuth.authorize_url
+        res = {
+            'status_code': 200,
+            "authorize_url": authorize_url
+        }
+        print(res)
+        return JsonResponse(res)
+
+
+def getWechatAuth(request):
+
+    code = request.GET.get('code', None)
+    webchatOAuth = WeChatOAuth(settings.WECHAT_APPID, settings.WECHAT_SECRET, '', 'snsapi_userinfo')
+    res = webchatOAuth.fetch_access_token(code)
+    if 'errcode' in res:
+        return HttpResponse(json.dumps(res))
+    else:
+        open_id = webchatOAuth.open_id
+        userinfo = webchatOAuth.get_user_info()
+        userinfo.pop('privilege')
+        obj, created = WxUserInfo.objects.update_or_create(openid=open_id, defaults=userinfo)
+        print('-------------', obj, created)
+        data = {
+            'status_code': 200,
+            'openid': open_id
+        }
+        return JsonResponse(data)
