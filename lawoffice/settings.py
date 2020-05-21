@@ -171,9 +171,9 @@ SIMPLEUI_ANALYSIS = False   #收集分析
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
-    # 'http://127.0.0.1:8080',
-    # 'http://127.0.0.1:8001',
-    # 'http://mlx.wx.xzls.vip',
+    'http://127.0.0.1:8080',
+    'http://127.0.0.1:8001',
+    'http://mlx.wx.xzls.vip',
 )
 CORS_ALLOW_METHODS = (
     'DELETE',

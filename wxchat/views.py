@@ -157,7 +157,7 @@ def createMenu(request):
             {
                 "type": "view",
                 "name": "律师服务",
-                "url": settings.ROOT_URL + "/#/about/"
+                "url": settings.ROOT_URL + "/"
             },
             # {
             #     "type": "view",
