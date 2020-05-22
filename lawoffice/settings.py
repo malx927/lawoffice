@@ -146,6 +146,9 @@ USE_TZ = False
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 #simple ui
 SIMPLEUI_DEFAULT_ICON = False
 SIMPLEUI_LOGIN_PARTICLES = True

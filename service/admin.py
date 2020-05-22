@@ -21,7 +21,7 @@ class PrivateContractAdmin(admin.ModelAdmin):
     list_display = ['code', 'name', 'telephone', 'start_date', 'end_date', 'sign_date', 'is_success']
     search_fields = ['code', 'name', 'telephone', 'id_card', 'client']
     list_filter = ['start_date', 'is_success']
-    readonly_fields = ['code']
+    # readonly_fields = ['code']
 
     fieldsets = (
         (None, {
@@ -36,7 +36,7 @@ class PrivateContractAdmin(admin.ModelAdmin):
         }),
         ('其他信息', {
             'classes': ('collapse',),
-            'fields': ('sign_date', ('success_date', 'is_success'), 'picture')
+            'fields': ('sign_date', ('success_date', 'is_success'), 'picture', 'openid')
         })
 
     )
@@ -48,7 +48,7 @@ class CompanyContractAdmin(admin.ModelAdmin):
     list_display = ['code', 'name', 'credit_code', 'address', 'legal_person', 'telephone', 'start_date', 'end_date', 'sign_date', 'is_confirm', 'is_success']
     search_fields = ['code', 'name', 'telephone', 'credit_code', 'contact_tel', 'legal_person', 'contact_person']
     list_filter = ['sign_date', 'is_confirm', 'is_success']
-    readonly_fields = ['code']
+    # readonly_fields = ['code']
 
     fieldsets = (
         (None, {
@@ -63,7 +63,7 @@ class CompanyContractAdmin(admin.ModelAdmin):
         }),
         ('其他信息', {
             'classes': ('collapse',),
-            'fields': ('sign_date', ('confirm_date', 'is_confirm'), ('success_date', 'is_success'), 'picture')
+            'fields': ('sign_date', ('confirm_date', 'is_confirm'), ('success_date', 'is_success'), 'picture', 'openid')
         })
 
     )
