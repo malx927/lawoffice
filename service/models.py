@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+from django.db.models import Max
 
 
 class PersonInfo(models.Model):
@@ -42,7 +45,7 @@ class CompanyInfo(models.Model):
 
 class PrivateContract(models.Model):
     """私人律师服务合同"""
-    code = models.CharField(verbose_name='合同编号', max_length=16)
+    code = models.CharField(verbose_name='合同编号', max_length=16, blank=True, null=True)
     openid = models.CharField(verbose_name='微信ID', max_length=120, blank=True, null=True)
     name = models.CharField(verbose_name='姓名', max_length=24)
     telephone = models.CharField(verbose_name='电话', max_length=32)
@@ -54,7 +57,7 @@ class PrivateContract(models.Model):
     office_address = models.CharField(verbose_name='地址', max_length=128)
     start_date = models.DateField(verbose_name='开始时间')
     end_date = models.DateField(verbose_name='截止时间')
-    sign_date = models.DateTimeField(verbose_name='签订时间')
+    sign_date = models.DateTimeField(verbose_name='签订时间', blank=True, null=True)
     is_success = models.BooleanField(verbose_name='生效确认', default=False)
     success_date = models.DateTimeField(verbose_name='生效时间', blank=True, null=True)
     picture = models.ImageField(verbose_name='合同文本', upload_to="contract/", blank=True, null=True)
@@ -67,11 +70,33 @@ class PrivateContract(models.Model):
     class Meta:
         verbose_name = '私人服务合同'
         verbose_name_plural = verbose_name
+        ordering = ["-add_time"]
+
+    @classmethod
+    def get_max_code(cls):
+        year = datetime.datetime.now().strftime('%Y')
+        max_code = cls.objects.filter(code__startswith=year).aggregate(max_code=Max("code"))
+        max_value = max_code['max_code']
+        if max_value is None:
+            num = '0001'
+            code = '{0}-{1}'.format(year, num)
+            return code
+        else:
+            num = str(int(max_value[-4:]) + 1).rjust(4, '0')
+            code = '{0}-{1}'.format(year, num)
+            return code
+
+    def save(self, *args, **kwargs):
+        code = PrivateContract.get_max_code()
+        self.code = code
+        if self.is_success:
+            self.success_date = datetime.datetime.now()
+        return super().save(*args, **kwargs)
 
 
 class CompanyContract(models.Model):
     """公司合同"""
-    code = models.CharField(verbose_name='合同编号', max_length=16)
+    code = models.CharField(verbose_name='合同编号', max_length=16, blank=True, null=True)
     openid = models.CharField(verbose_name='微信ID', max_length=120, blank=True, null=True)
     company = models.ForeignKey(CompanyInfo, verbose_name='公司ID', on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(verbose_name='公司名称', max_length=64)
@@ -88,7 +113,7 @@ class CompanyContract(models.Model):
     office_address = models.CharField(verbose_name='地址', max_length=128)
     start_date = models.DateField(verbose_name='开始时间')
     end_date = models.DateField(verbose_name='截止时间')
-    sign_date = models.DateTimeField(verbose_name='签订时间')
+    sign_date = models.DateTimeField(verbose_name='签订时间', blank=True, null=True)
     is_confirm = models.BooleanField(verbose_name='收费确认', default=False)
     confirm_date = models.DateTimeField(verbose_name='确认时间', blank=True, null=True)
     is_success = models.BooleanField(verbose_name='生效确认', default=False)
@@ -103,3 +128,22 @@ class CompanyContract(models.Model):
     class Meta:
         verbose_name = '法律顾问合同'
         verbose_name_plural = verbose_name
+
+    @classmethod
+    def get_max_code(cls):
+        year = datetime.datetime.now().strftime('%Y')
+        max_code = cls.objects.filter(code__startswith=year).aggregate(max_code=Max("code"))
+        max_value = max_code['max_code']
+        if max_value is None:
+            num = '0001'
+            code = '{0}{1}'.format(year, num)
+            return code
+        else:
+            num = str(int(max_value[-4:]) + 1).rjust(4, '0')
+            code = '{0}{1}'.format(year, num)
+            return code
+
+    def save(self, *args, **kwargs):
+        code = CompanyContract.get_max_code()
+        self.code = code
+        return super().save(*args, **kwargs)
