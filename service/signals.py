@@ -13,7 +13,6 @@ def update_persion_info(sender, instance, created, **kwargs):
             'name': instance.name,
             'telephone': instance.telephone,
             'id_card': instance.id_card,
-            'client': instance.client,
         }
         obj, created = PersonInfo.objects.update_or_create(defaults=user_info, openid=instance.openid)
         print(obj, created)
