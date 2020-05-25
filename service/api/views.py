@@ -6,13 +6,16 @@ from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyCont
 from .serializers import PersonInfoSerializer, CompanyInfoSerializer, PrivateContractSerializer, CompanyContractSerializer
 from wxchat.utils import get_openid_from_header
 
-# class PersonInfoViewSet(ModelViewSet):
-#     authentication_classes = ()
-#     # permission_classes = (WeixinPermission, )
-#     pagination_class = None
-#     queryset = PersonInfo.objects.all()
-#     serializer_class = PersonInfoSerializer
-#
+
+class PersonInfoViewSet(ReadOnlyModelViewSet):
+    authentication_classes = ()
+    # permission_classes = (WeixinPermission, )
+    pagination_class = None
+    queryset = PersonInfo.objects.all()
+    serializer_class = PersonInfoSerializer
+    lookup_field = 'openid'
+    lookup_url_kwarg = 'openid'
+
 #
 # class CompanyInfoViewSet(ModelViewSet):
 #     authentication_classes = ()
