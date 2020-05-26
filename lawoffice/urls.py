@@ -21,6 +21,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/wechat/', include('wxchat.urls')),
+    path('api/wechat/api/', include('wxchat.api.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api/users/', include('users.api.urls')),
     path('api/service/', include('service.api.urls')),

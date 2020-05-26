@@ -22,7 +22,9 @@ class WxUserInfo(models.Model):
     subscribe = models.NullBooleanField(verbose_name='是否订阅', default=0)
     openid = models.CharField(verbose_name='微信ID', max_length=120)
     nickname = models.CharField(verbose_name='用户昵称', max_length=64)
-    sex = models.IntegerField(verbose_name='性别', choices=SEX_CHOICE)            #值为1时是男性，值为2时是女性，值为0时是未知
+    name = models.CharField(verbose_name='姓名', max_length=32, blank=True, null=True)
+    telephone = models.CharField(verbose_name='手机号码', max_length=18, blank=True, null=True)
+    sex = models.IntegerField(verbose_name='性别', choices=SEX_CHOICE)            # 值为1时是男性，值为2时是女性，值为0时是未知
     province = models.CharField(verbose_name='省份', max_length=64, blank=True, null=True)
     city = models.CharField(verbose_name='城市', max_length=64, blank=True, null=True)
     country = models.CharField(verbose_name='国家', max_length=64, blank=True, null=True)

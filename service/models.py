@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.db.models import Max
+from office.models import Office
 
 
 class PersonInfo(models.Model):
@@ -53,9 +54,11 @@ class PrivateContract(models.Model):
     office_man = models.CharField(verbose_name='联系人', max_length=16, blank=True, null=True)
     office_man_tel = models.CharField(verbose_name='联系电话', max_length=24, blank=True, null=True)
     office_address = models.CharField(verbose_name='地址', max_length=128, blank=True, null=True)
+    office_tel = models.CharField(verbose_name='律所电话', max_length=24, blank=True, null=True)
     start_date = models.DateField(verbose_name='开始时间', blank=True, null=True)
     end_date = models.DateField(verbose_name='截止时间', blank=True, null=True)
     is_success = models.BooleanField(verbose_name='生效确认', default=False)
+    office_openid = models.CharField(verbose_name='业务人员微信ID', max_length=120, blank=True, null=True)
     # picture = models.ImageField(verbose_name='合同文本', upload_to="contract/", blank=True, null=True)
     update_time = models.DateTimeField(verbose_name='修改时间', auto_now=True)
     add_time = models.DateTimeField(verbose_name='添加时间', auto_now_add=True)
@@ -83,11 +86,18 @@ class PrivateContract(models.Model):
             return code
 
     def save(self, *args, **kwargs):
-        code = PrivateContract.get_max_code()
-        self.code = code
-        if self.is_success:
-            self.start_date = datetime.datetime.now().date()
-            self.end_date = (datetime.datetime.now() + datetime.timedelta(days=364)).date()
+
+        if self.code is None:
+            code = PrivateContract.get_max_code()
+            self.code = code
+
+        office = Office.objects.first()
+        if office:
+            self.office_tel = office.telephone
+
+        # if self.is_success and :
+        #     self.start_date = datetime.datetime.now().date()
+        #     self.end_date = (datetime.datetime.now() + datetime.timedelta(days=364)).date()
         return super().save(*args, **kwargs)
 
 

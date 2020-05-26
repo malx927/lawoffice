@@ -12,3 +12,4 @@ redis==3.5.2
 aliyun-python-sdk-core-v3==2.13.11
 django-simpleui==4.0.2
 django-cors-headers==3.2.1
+qrcode==6.1
