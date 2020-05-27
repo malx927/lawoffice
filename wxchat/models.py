@@ -41,6 +41,7 @@ class WxUserInfo(models.Model):
     qr_image = models.ImageField(verbose_name='场景图片', upload_to='wxchat', blank=True, null=True)
     qr_time = models.DateTimeField(verbose_name='图片创建时间', blank=True, null=True)
     member_role = models.ForeignKey(MemberRole, verbose_name="员工角色", blank=True, null=True, on_delete=models.SET_NULL)
+    is_super = models.BooleanField(verbose_name='超级用户', default=False, help_text="超级用户有第三方授权功能")
 
     def __str__(self):
         return self.nickname
