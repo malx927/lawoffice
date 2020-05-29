@@ -23,13 +23,15 @@ class PersonInfoViewSet(ReadOnlyModelViewSet):
     lookup_field = 'openid'
     lookup_url_kwarg = 'openid'
 
-#
-# class CompanyInfoViewSet(ModelViewSet):
-#     authentication_classes = ()
-#     permission_classes = ()
-#     pagination_class = None
-#     queryset = CompanyInfo.objects.all()
-#     serializer_class = CompanyInfoSerializer
+
+class CompanyInfoViewSet(ReadOnlyModelViewSet):
+    authentication_classes = ()
+    permission_classes = ()
+    pagination_class = None
+    queryset = CompanyInfo.objects.all()
+    serializer_class = CompanyInfoSerializer
+    lookup_field = 'openid'
+    lookup_url_kwarg = 'openid'
 
 
 class PrivateContractViewSet(ModelViewSet):
@@ -70,13 +72,42 @@ class PrivateContractViewSet(ModelViewSet):
         return user if user is not None else None
 
 
-class CompanyContractViewSet(ReadOnlyModelViewSet):
+class CompanyContractViewSet(ModelViewSet):
     authentication_classes = ()
     permission_classes = ()
     pagination_class = None
     queryset = CompanyContract.objects.all()
     serializer_class = CompanyContractSerializer
 
+    def get_queryset(self):
+        openid = get_openid_from_header(self.request)
+        print(openid, 'CompanyContractViewSet')
+        if openid:
+            queryset = super().get_queryset()
+            return queryset.filter(Q(openid=openid) | Q(office_openid=openid))
+        else:
+            return None
+
+    def get_object(self):
+        obj = super().get_object()
+        print('CompanyContractViewSet:', obj.name)
+        if not obj.is_success:
+            openid = get_openid_from_header(self.request)
+            print(openid, 'CompanyContractViewSet :get_object')
+            if openid:
+                user = self.get_user(openid)
+                if user:
+                    obj.office_openid = openid
+                    obj.office_man = user.name
+                    obj.office_man_tel = user.telephone
+                    obj.save()
+        return obj
+
+    def get_user(self, openid):
+        if openid is None:
+            return None
+        user = WxUserInfo.objects.filter(openid=openid, member_role=2).first()  # member_role[ 1为销售]
+        return user if user is not None else None
 
 
 
