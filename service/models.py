@@ -118,10 +118,7 @@ class CompanyContract(models.Model):
     office_tel = models.CharField(verbose_name='律所电话', max_length=24, blank=True, null=True)
     start_date = models.DateField(verbose_name='开始时间', blank=True, null=True)
     end_date = models.DateField(verbose_name='截止时间', blank=True, null=True)
-    is_confirm = models.BooleanField(verbose_name='收费确认', default=False)
-    confirm_date = models.DateTimeField(verbose_name='确认时间', blank=True, null=True)
     is_success = models.BooleanField(verbose_name='生效确认', default=False)
-    success_date = models.DateTimeField(verbose_name='生效时间', blank=True, null=True)
     office_openid = models.CharField(verbose_name='业务人员微信ID', max_length=120, blank=True, null=True)
     # picture = models.ImageField(verbose_name='合同文本', upload_to="contract/", blank=True, null=True)
     update_time = models.DateTimeField(verbose_name='修改时间', auto_now=True)
@@ -142,11 +139,11 @@ class CompanyContract(models.Model):
         max_value = max_code['max_code']
         if max_value is None:
             num = '0001'
-            code = '{0}{1}'.format(year, num)
+            code = '{0}-{1}'.format(year, num)
             return code
         else:
             num = str(int(max_value[-4:]) + 1).rjust(4, '0')
-            code = '{0}{1}'.format(year, num)
+            code = '{0}-{1}'.format(year, num)
             return code
 
     def save(self, *args, **kwargs):

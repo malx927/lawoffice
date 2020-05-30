@@ -45,9 +45,9 @@ class PrivateContractAdmin(admin.ModelAdmin):
 @admin.register(CompanyContract)
 class CompanyContractAdmin(admin.ModelAdmin):
 
-    list_display = ['code', 'name', 'credit_code', 'address', 'legal_person', 'telephone', 'start_date', 'end_date', 'is_confirm', 'is_success']
+    list_display = ['code', 'name', 'credit_code', 'address', 'legal_person', 'telephone', 'start_date', 'end_date', 'is_success']
     search_fields = ['code', 'name', 'telephone', 'credit_code', 'contact_tel', 'legal_person', 'contact_person']
-    list_filter = ['is_confirm', 'is_success']
+    list_filter = ['is_success']
     # readonly_fields = ['code']
 
     fieldsets = (
@@ -63,7 +63,7 @@ class CompanyContractAdmin(admin.ModelAdmin):
         }),
         ('其他信息', {
             'classes': ('collapse',),
-            'fields': (('confirm_date', 'is_confirm'), ('success_date', 'is_success'), 'openid', 'office_openid')
+            'fields': ('is_success', 'openid', 'office_openid')
         })
 
     )

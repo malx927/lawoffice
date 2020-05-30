@@ -14,6 +14,13 @@ from .serializers import PersonInfoSerializer, CompanyInfoSerializer, PrivateCon
 from wxchat.utils import get_openid_from_header
 
 
+def get_user( openid):
+    if openid is None:
+        return None
+    user = WxUserInfo.objects.filter(openid=openid).first()
+    return user
+
+
 class PersonInfoViewSet(ReadOnlyModelViewSet):
     authentication_classes = ()
     # permission_classes = (WeixinPermission, )
@@ -44,9 +51,16 @@ class PrivateContractViewSet(ModelViewSet):
     def get_queryset(self):
         openid = get_openid_from_header(self.request)
         print(openid, '::::::::::::::::::')
+        queryset = super().get_queryset()
         if openid:
-            queryset = super().get_queryset()
-            return queryset.filter(Q(openid=openid) | Q(office_openid=openid))
+            user = get_user(openid)
+            if user is None:
+                return None
+
+            if user and user.is_super == 1:
+                return queryset
+            else:
+                return queryset.filter(Q(openid=openid) | Q(office_openid=openid))
         else:
             return None
 
@@ -57,19 +71,13 @@ class PrivateContractViewSet(ModelViewSet):
             openid = get_openid_from_header(self.request)
             print(openid, ':------------')
             if openid:
-                user = self.get_user(openid)
-                if user:
+                user = get_user(openid)
+                if user and user.member_role_id == 1:  # 销售人员
                     obj.office_openid = openid
                     obj.office_man = user.name
                     obj.office_man_tel = user.telephone
                     obj.save()
         return obj
-
-    def get_user(self, openid):
-        if openid is None:
-            return None
-        user = WxUserInfo.objects.filter(openid=openid, member_role=1).first()  # member_role[ 1为销售]
-        return user if user is not None else None
 
 
 class CompanyContractViewSet(ModelViewSet):
@@ -82,32 +90,31 @@ class CompanyContractViewSet(ModelViewSet):
     def get_queryset(self):
         openid = get_openid_from_header(self.request)
         print(openid, 'CompanyContractViewSet')
+        queryset = super().get_queryset()
         if openid:
-            queryset = super().get_queryset()
-            return queryset.filter(Q(openid=openid) | Q(office_openid=openid))
+            user = get_user(openid)
+            if user is None:
+                return None
+            if user and user.is_super == 1:
+                return queryset
+            else:
+                return queryset.filter(Q(openid=openid) | Q(office_openid=openid))
         else:
             return None
 
     def get_object(self):
         obj = super().get_object()
-        print('CompanyContractViewSet:', obj.name)
         if not obj.is_success:
             openid = get_openid_from_header(self.request)
             print(openid, 'CompanyContractViewSet :get_object')
             if openid:
-                user = self.get_user(openid)
-                if user:
+                user = get_user(openid)
+                if user and user.member_role_id == 2:      # member_role[ 2 为法律顾问代理]
                     obj.office_openid = openid
                     obj.office_man = user.name
                     obj.office_man_tel = user.telephone
                     obj.save()
         return obj
-
-    def get_user(self, openid):
-        if openid is None:
-            return None
-        user = WxUserInfo.objects.filter(openid=openid, member_role=2).first()  # member_role[ 1为销售]
-        return user if user is not None else None
 
 
 
