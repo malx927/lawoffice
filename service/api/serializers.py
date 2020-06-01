@@ -4,7 +4,7 @@ from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from users.api.authentication import authenticate
 
-from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract
+from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
 
 
 class PersonInfoSerializer(ModelSerializer):
@@ -23,6 +23,13 @@ class CompanyInfoSerializer(ModelSerializer):
     class Meta:
         model = CompanyInfo
         exclude = ['update_time', 'add_time']
+
+
+class ContractAmountSerializer(ModelSerializer):
+    """合同金额"""
+    class Meta:
+        model = ContractAmount
+        fields = '__all__'
 
 
 class PrivateContractSerializer(ModelSerializer):

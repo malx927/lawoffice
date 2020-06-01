@@ -1,5 +1,5 @@
 from django.contrib import admin
-from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract
+from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
 
 
 @admin.register(PersonInfo)
@@ -73,3 +73,11 @@ class CompanyContractAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/admin/service.css',)
         }
+
+
+@admin.register(ContractAmount)
+class ContractAmountAdmin(admin.ModelAdmin):
+
+    list_display = ['money', 'desc', 'sort', 'add_time']
+    search_fields = ['money', 'desc']
+

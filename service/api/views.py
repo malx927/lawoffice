@@ -7,10 +7,11 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from wxchat.api.permissions import WeixinPermission
 
-from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract
+from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
 from wxchat.models import WxUserInfo
 
-from .serializers import PersonInfoSerializer, CompanyInfoSerializer, PrivateContractSerializer, CompanyContractSerializer
+from .serializers import PersonInfoSerializer, CompanyInfoSerializer, PrivateContractSerializer, \
+    CompanyContractSerializer, ContractAmountSerializer
 from wxchat.utils import get_openid_from_header
 
 
@@ -39,6 +40,14 @@ class CompanyInfoViewSet(ReadOnlyModelViewSet):
     serializer_class = CompanyInfoSerializer
     lookup_field = 'openid'
     lookup_url_kwarg = 'openid'
+
+
+class ContractAmountViewSet(ReadOnlyModelViewSet):
+    authentication_classes = ()
+    permission_classes = ()
+    pagination_class = None
+    queryset = ContractAmount.objects.all()
+    serializer_class = ContractAmountSerializer
 
 
 class PrivateContractViewSet(ModelViewSet):
