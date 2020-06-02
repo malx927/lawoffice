@@ -134,3 +134,21 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.Meta.verbose_name
+
+
+class SwipeImage(models.Model):
+    name = models.CharField(verbose_name='图片名称', max_length=40)
+    image = models.ImageField(verbose_name='图片地址', upload_to='swipe')
+    path = models.CharField(verbose_name='跳转地址', max_length=120, blank=True, null=True)
+    sort = models.IntegerField(verbose_name='排序', blank=True, null=True)
+    is_show = models.BooleanField(verbose_name='显示', default=True)
+    update_time = models.DateTimeField(verbose_name='修改时间', auto_now=True)
+    add_time = models.DateTimeField(verbose_name='添加时间', auto_now_add=True, auto_now=False)
+
+    class Meta:
+        verbose_name = '轮播图片'
+        verbose_name_plural = verbose_name
+        ordering = ['sort', '-add_time']
+
+    def __str__(self):
+        return self.name

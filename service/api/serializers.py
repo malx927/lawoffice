@@ -1,8 +1,6 @@
 # coding = utf-8
 from rest_framework import serializers
-from rest_framework.serializers import Serializer, ModelSerializer
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from users.api.authentication import authenticate
+from rest_framework.serializers import ModelSerializer
 
 from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
 

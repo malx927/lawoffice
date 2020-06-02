@@ -25,6 +25,10 @@ class PersonInfo(models.Model):
 
 class CompanyInfo(models.Model):
     """公司信息"""
+    AGENCY = (
+        (0, '否'),
+        (1, '是'),
+    )
     openid = models.CharField(verbose_name='微信ID', max_length=120)
     name = models.CharField(verbose_name='公司名称', max_length=64)
     credit_code = models.CharField(verbose_name='信用代码', max_length=24)
@@ -33,6 +37,7 @@ class CompanyInfo(models.Model):
     telephone = models.CharField(verbose_name='联系方式', max_length=64)
     contact_person = models.CharField(verbose_name='联系人', max_length=32)
     contact_tel = models.CharField(verbose_name='联系方式', max_length=64)
+    is_agency = models.IntegerField(verbose_name='第三方代理', default=0, choices=AGENCY)
     update_time = models.DateTimeField(verbose_name='修改时间', auto_now=True)
     add_time = models.DateTimeField(verbose_name='添加时间', auto_now_add=True)
 

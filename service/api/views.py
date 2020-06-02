@@ -1,10 +1,8 @@
 # coding = utf-8
-from io import BytesIO
-
 from django.db.models import Q
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+
+from rest_framework import mixins
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from wxchat.api.permissions import WeixinPermission
 
 from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
@@ -15,7 +13,7 @@ from .serializers import PersonInfoSerializer, CompanyInfoSerializer, PrivateCon
 from wxchat.utils import get_openid_from_header
 
 
-def get_user( openid):
+def get_user(openid):
     if openid is None:
         return None
     user = WxUserInfo.objects.filter(openid=openid).first()
@@ -66,6 +64,9 @@ class PrivateContractViewSet(ModelViewSet):
             if user is None:
                 return None
 
+            if self.lookup_field in self.kwargs:
+                return queryset
+
             if user and user.is_super == 1:
                 return queryset
             else:
@@ -91,7 +92,7 @@ class PrivateContractViewSet(ModelViewSet):
 
 class CompanyContractViewSet(ModelViewSet):
     authentication_classes = ()
-    permission_classes = ()
+    permission_classes = (WeixinPermission,)
     pagination_class = None
     queryset = CompanyContract.objects.all()
     serializer_class = CompanyContractSerializer
@@ -104,6 +105,9 @@ class CompanyContractViewSet(ModelViewSet):
             user = get_user(openid)
             if user is None:
                 return None
+            if self.lookup_field in self.kwargs:
+                return queryset
+
             if user and user.is_super == 1:
                 return queryset
             else:
@@ -126,7 +130,18 @@ class CompanyContractViewSet(ModelViewSet):
         return obj
 
 
-
+class CompanyAgencyViewSet(mixins.CreateModelMixin,
+                           mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           mixins.DestroyModelMixin,
+                           GenericViewSet):
+    authentication_classes = ()
+    permission_classes = (WeixinPermission,)
+    pagination_class = None
+    queryset = CompanyInfo.objects.all()
+    serializer_class = CompanyInfoSerializer
+    lookup_field = 'openid'
+    lookup_url_kwarg = 'openid'
 
 
 
