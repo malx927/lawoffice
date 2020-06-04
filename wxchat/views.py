@@ -80,6 +80,7 @@ def wechat(request):
 
     elif request.method == 'POST':
         msg = parse_message(request.body)
+        print('+++++:', msg, msg.type)
         if msg.type == 'text':
             reply = TransferCustomerServiceReply(message=msg)
         elif msg.type == 'image':
