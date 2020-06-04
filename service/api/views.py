@@ -1,7 +1,7 @@
 # coding = utf-8
 from django.db.models import Q
 
-from rest_framework import mixins
+from rest_framework import mixins, exceptions, status
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from wxchat.api.permissions import WeixinPermission
 
@@ -140,8 +140,33 @@ class CompanyAgencyViewSet(mixins.CreateModelMixin,
     pagination_class = None
     queryset = CompanyInfo.objects.all()
     serializer_class = CompanyInfoSerializer
-    lookup_field = 'openid'
-    lookup_url_kwarg = 'openid'
+
+    def get_object(self):
+        obj = super().get_object()
+        print(obj)
+        if not obj.is_agency:
+            openid = get_openid_from_header(self.request)
+            print(openid, 'CompanyAgencyViewSet :get_object')
+            if openid:
+                user = get_user(openid)
+                if user.openid == obj.openid:
+                    return obj
+
+                if user and user.is_super:      # is_super[ 1 为超级用户可以代理授权]
+                    client = get_user(obj.openid)
+                    obj.is_agency = 1
+                    obj.save()
+                    if client:
+                        client.member_role_id = 2
+                        client.save()
+                else:
+                    msg = {
+                        "status_code": status.HTTP_401_UNAUTHORIZED,
+                        "message": "没有授权功能权限"
+                    }
+                    print(msg)
+                    raise exceptions.AuthenticationFailed(msg)
+        return obj
 
 
 
