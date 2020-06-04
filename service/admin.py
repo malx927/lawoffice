@@ -28,14 +28,12 @@ class PrivateContractAdmin(admin.ModelAdmin):
             'fields': ('code', ('start_date', 'end_date'))
         }),
         ('客户信息', {
-            'fields': (('name', 'id_card'), ('telephone', None))
+            'fields': (('name', 'id_card'), 'telephone')
         }),
         ('律所信息', {
-            'classes': ('collapse',),
             'fields': (('office_name', 'office_man'), ('office_address', 'office_man_tel'))
         }),
         ('其他信息', {
-            'classes': ('collapse',),
             'fields': ('is_success', 'openid')
         })
 
