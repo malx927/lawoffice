@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +27,5 @@ urlpatterns = [
     path('api/users/', include('users.api.urls')),
     path('api/service/', include('service.api.urls')),
     path('api/office/', include('office.api.urls')),
+    path('MP_verify_0m9wLlrey4tl5OoX\.txt$', TemplateView.as_view(template_name='MP_verify_0m9wLlrey4tl5OoX.txt', content_type='text/plain')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
