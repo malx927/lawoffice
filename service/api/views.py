@@ -57,7 +57,7 @@ class PrivateContractViewSet(ModelViewSet):
 
     def get_queryset(self):
         openid = get_openid_from_header(self.request)
-        print(openid, '::::::::::::::::::')
+        print(openid, 'get_queryset')
         queryset = super().get_queryset()
         if openid:
             user = get_user(openid)
@@ -76,12 +76,13 @@ class PrivateContractViewSet(ModelViewSet):
 
     def get_object(self):
         obj = super().get_object()
-        print(':::::::::::', obj.name)
+        print('get_object', obj.name)
         if not obj.is_success:
             openid = get_openid_from_header(self.request)
-            print(openid, ':------------')
+            print(openid, '::get_object')
             if openid:
                 user = get_user(openid)
+                print(user, user.member_role_id)
                 if user and user.member_role_id == 1:  # 销售人员
                     obj.office_openid = openid
                     obj.office_man = user.name

@@ -34,7 +34,7 @@ class PrivateContractAdmin(admin.ModelAdmin):
             'fields': (('office_name', 'office_man'), ('office_address', 'office_man_tel'))
         }),
         ('其他信息', {
-            'fields': ('is_success', 'openid')
+            'fields': ('is_success', 'openid', 'office_openid')
         })
 
     )
