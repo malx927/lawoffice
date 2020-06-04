@@ -9,7 +9,7 @@ admin.site.site_header = "祥子律师事务所"
 
 @admin.register(MemberRole)
 class MemberRoleAdmin(admin.ModelAdmin):
-    list_display = ['name', 'remark']
+    list_display = ['id', 'name', 'remark']
 
 
 @admin.register(WxUserInfo)

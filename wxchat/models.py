@@ -6,6 +6,7 @@ from wxchat.constants import SEX_CHOICE
 
 
 class MemberRole(models.Model):
+    id = models.IntegerField(verbose_name='角色ID', primary_key=True)
     name = models.CharField(verbose_name="角色名称", max_length=20)
     remark = models.CharField(verbose_name="说明", max_length=100, blank=True, null=True)
 
