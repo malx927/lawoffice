@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from wxchat.views import wechat, createMenu, getMenu, deleteMenu, getWechatAuth, getWechatAuthCode
+from wxchat.views import wechat, createMenu, getMenu, deleteMenu, getWechatAuth, getWechatAuthCode, get_user_info
 
 urlpatterns = [
     path('', wechat),  # 微信入口
@@ -23,4 +23,5 @@ urlpatterns = [
     path('delmenu/', deleteMenu, name='wxchat-delete-menu'),
     path('auth_code/', getWechatAuthCode, name='wxchat-auth-code'),
     path('auth_openid/', getWechatAuth, name='wxchat-auth-openid'),
+    path('userinfo/', get_user_info, name='wxchat-user-info'),
 ]

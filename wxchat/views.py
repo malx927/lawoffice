@@ -94,12 +94,12 @@ def wechat(request):
             print('eventkey=', msg.event)
             if msg.event == 'subscribe':
                 saveUserinfo(msg.source)
-                reply = create_reply('你好，欢迎关注祥子律师事务所', msg)
+                reply = create_reply('您好，欢迎关注祥子律师事务所', msg)
             elif msg.event == 'unsubscribe':
                 reply = create_reply('取消关注公众号', msg)
                 unSubUserinfo(msg.source)
             elif msg.event == 'subscribe_scan':
-                reply = create_reply('你好，欢迎关注祥子律师事务所', msg)
+                reply = create_reply('您好，欢迎关注祥子律师事务所', msg)
                 saveUserinfo(msg.source, msg.scene_id)
             elif msg.event == 'scan':
                 reply = create_reply('', msg)
@@ -212,7 +212,6 @@ def getWechatAuthCode(request):
 
 
 def getWechatAuth(request):
-
     code = request.GET.get('code', None)
     webchatOAuth = WeChatOAuth(settings.WECHAT_APPID, settings.WECHAT_SECRET, '', 'snsapi_userinfo')
     res = webchatOAuth.fetch_access_token(code)
@@ -229,3 +228,27 @@ def getWechatAuth(request):
             'openid': open_id
         }
         return JsonResponse(data)
+
+
+# 获取用户openid列表
+@login_required
+def get_user_info(request):
+    client = wxClient()
+    userid_list = client.user.get_followers()
+    logger.info(userid_list)
+    WxUserInfo.objects.all().update(qr_scene=0)
+
+    if 'errcode' not in userid_list and userid_list['count'] > 0:
+        openid_list = userid_list['data']['openid']
+        n = 100
+        for openids in [openid_list[i:i + n] for i in range(0, len(openid_list), n)]:
+            print("openids:", openids)
+            userinfo_lists = client.user.get_batch(openids)
+            for user in userinfo_lists:
+                logger.info(user)
+                sub_time = user.pop('subscribe_time')
+                sub_time = datetime.datetime.fromtimestamp(sub_time).strftime('%Y-%m-%d %H:%M:%S')
+                user['subscribe_time'] = sub_time
+                WxUserInfo.objects.update_or_create(defaults=user, openid=user['openid'])
+
+    return HttpResponse(json.dumps(userid_list, ensure_ascii=False))

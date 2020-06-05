@@ -80,6 +80,7 @@
         <button type="button" class="el-button el-button--primary" id="id_create_menu"><i class="el-icon-circle-plus-outline"></i><span>创建菜单</span></button>
         <button type="button" class="el-button el-button--primary" id="id_search_menu"><i class="el-icon-search"></i><span>查询菜单</span></button>
         <button type="button" class="el-button el-button--danger" id="id_delete_menu"><i class="el-icon-delete"></i><span>删除菜单</span></button>
+        <button type="button" class="el-button el-button--success" id="id_user_list"><i class="el-icon-user"></i><span>获取用户列表</span></button>
     </div>
     <div id="id_menu" style="padding:20px;">
 
@@ -144,6 +145,29 @@
                       }
                 });
             });
+
+            $("#id_user_list").click(function () {
+                $.ajax({
+                      type: 'GET',
+                      url: "{% url 'wxchat-user-info' %}",
+                      dataType: 'json',
+                      timeout: 5000,
+                      success: function(data){
+                        console.log(JSON.stringify(data));
+                        if(data.errcode == undefined && data.total >=0){
+                            alert("用户数量：" + data.total)
+                        }else {
+                            alert("获取用户失败")
+                        }
+
+                      },
+                      error: function(xhr, type,error){
+                          console.log(type);
+                           alert("获取失败")
+                      }
+                });
+            });
+
         })
     </script>
 {% endblock %}
