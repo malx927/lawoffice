@@ -225,7 +225,8 @@ def getWechatAuth(request):
         print('-------------', obj, created)
         data = {
             'status_code': 200,
-            'openid': open_id
+            'openid': open_id,
+            'member_role': obj.member_role_id if obj.member_role else 0
         }
         return JsonResponse(data)
 

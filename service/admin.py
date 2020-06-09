@@ -1,5 +1,6 @@
 from django.contrib import admin
-from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
+from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount, \
+    PrivateContractAmount
 
 
 @admin.register(PersonInfo)
@@ -18,7 +19,7 @@ class CompanyInfoAdmin(admin.ModelAdmin):
 
 @admin.register(PrivateContract)
 class PrivateContractAdmin(admin.ModelAdmin):
-    list_display = ['code', 'name', 'telephone', 'start_date', 'end_date', 'is_success']
+    list_display = ['code', 'name', 'telephone', 'start_date', 'end_date', 'money', 'is_success']
     search_fields = ['code', 'name', 'telephone', 'id_card']
     list_filter = ['start_date', 'is_success']
     # readonly_fields = ['code']
@@ -79,3 +80,9 @@ class ContractAmountAdmin(admin.ModelAdmin):
     list_display = ['money', 'desc', 'sort', 'add_time']
     search_fields = ['money', 'desc']
 
+
+@admin.register(PrivateContractAmount)
+class PrivateContractAmountAdmin(admin.ModelAdmin):
+
+    list_display = ['money', 'desc', 'add_time']
+    search_fields = ['money', 'desc']

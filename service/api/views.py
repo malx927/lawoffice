@@ -1,16 +1,21 @@
 # coding = utf-8
+import logging
+
 from django.db.models import Q
 
 from rest_framework import mixins, exceptions, status
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from wxchat.api.permissions import WeixinPermission
 
-from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
+from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount, \
+    PrivateContractAmount
 from wxchat.models import WxUserInfo
 
 from .serializers import PersonInfoSerializer, CompanyInfoSerializer, PrivateContractSerializer, \
-    CompanyContractSerializer, ContractAmountSerializer
+    CompanyContractSerializer, ContractAmountSerializer, PrivateAmountSerializer
 from wxchat.utils import get_openid_from_header
+
+logger = logging.getLogger("django")
 
 
 def get_user(openid):
@@ -48,6 +53,14 @@ class ContractAmountViewSet(ReadOnlyModelViewSet):
     serializer_class = ContractAmountSerializer
 
 
+class PrivateAmountViewSet(ReadOnlyModelViewSet):
+    authentication_classes = ()
+    permission_classes = ()
+    pagination_class = None
+    queryset = PrivateContractAmount.objects.all()
+    serializer_class = PrivateAmountSerializer
+
+
 class PrivateContractViewSet(ModelViewSet):
     authentication_classes = ()
     permission_classes = (WeixinPermission,)
@@ -57,7 +70,7 @@ class PrivateContractViewSet(ModelViewSet):
 
     def get_queryset(self):
         openid = get_openid_from_header(self.request)
-        print(openid, 'get_queryset')
+        logger.info("PrivateContractViewSet:get_queryset:{}".format(openid))
         queryset = super().get_queryset()
         if openid:
             user = get_user(openid)
@@ -67,7 +80,7 @@ class PrivateContractViewSet(ModelViewSet):
             if self.lookup_field in self.kwargs:
                 return queryset
 
-            if user and user.is_super == 1:
+            if user and user.is_super:
                 return queryset
             else:
                 return queryset.filter(Q(openid=openid) | Q(office_openid=openid))
@@ -83,7 +96,7 @@ class PrivateContractViewSet(ModelViewSet):
             if openid:
                 user = get_user(openid)
                 print(user, user.member_role_id)
-                if user and user.member_role_id == 1:  # 销售人员
+                if user and user.member_role_id in [1, 3]:  # 销售人员/律师
                     obj.office_openid = openid
                     obj.office_man = user.name
                     obj.office_man_tel = user.telephone
@@ -120,10 +133,10 @@ class CompanyContractViewSet(ModelViewSet):
         obj = super().get_object()
         if not obj.is_success:
             openid = get_openid_from_header(self.request)
-            print(openid, 'CompanyContractViewSet :get_object')
+            logger.info('CompanyContractViewSet :get_object:{}'.format(openid))
             if openid:
                 user = get_user(openid)
-                if user and user.member_role_id == 2:      # member_role[ 2 为法律顾问代理]
+                if user and user.member_role_id in [1, 2, 3]:      # member_role[ 2 为法律顾问代理]
                     obj.office_openid = openid
                     obj.office_man = user.name
                     obj.office_man_tel = user.telephone

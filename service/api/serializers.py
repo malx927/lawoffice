@@ -2,7 +2,8 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount
+from service.models import PersonInfo, CompanyInfo, PrivateContract, CompanyContract, ContractAmount, \
+    PrivateContractAmount
 
 
 class PersonInfoSerializer(ModelSerializer):
@@ -27,6 +28,13 @@ class ContractAmountSerializer(ModelSerializer):
     """合同金额"""
     class Meta:
         model = ContractAmount
+        fields = '__all__'
+
+
+class PrivateAmountSerializer(ModelSerializer):
+    """私人律师合同金额"""
+    class Meta:
+        model = PrivateContractAmount
         fields = '__all__'
 
 
