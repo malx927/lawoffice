@@ -18,4 +18,4 @@ class UserRoleSerializer(ModelSerializer):
     """微信角色"""
     class Meta:
         model = WxUserInfo
-        fields = ['openid', 'member_role']
+        fields = ['openid', 'member_role', 'name', 'telephone']
