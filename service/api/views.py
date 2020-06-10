@@ -1,7 +1,7 @@
 # coding = utf-8
 import logging
 
-from django.db.models import Q
+from django.db.models import Q, F
 
 from rest_framework import mixins, exceptions, status
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
@@ -144,42 +144,49 @@ class CompanyContractViewSet(ModelViewSet):
         return obj
 
 
-class CompanyAgencyViewSet(mixins.CreateModelMixin,
-                           mixins.RetrieveModelMixin,
-                           mixins.UpdateModelMixin,
-                           mixins.DestroyModelMixin,
-                           GenericViewSet):
+class CompanyAgencyViewSet(ModelViewSet):
     authentication_classes = ()
     permission_classes = (WeixinPermission,)
     pagination_class = None
     queryset = CompanyInfo.objects.all()
     serializer_class = CompanyInfoSerializer
 
+    def get_queryset(self):
+        openid = get_openid_from_header(self.request)
+        logger.info('CompanyAgencyViewSet:{}'.format(openid))
+        queryset = super().get_queryset()
+        if openid:
+            user = get_user(openid)
+            if user is None:
+                return None
+            if self.lookup_field in self.kwargs:
+                return queryset
+
+            if user and user.is_super == 1:
+                return queryset.filter(Q(office_openid=openid) | Q(is_agency=1))
+            else:
+                return queryset.filter(office_openid=openid)
+        else:
+            return None
+
     def get_object(self):
         obj = super().get_object()
-        print(obj)
+        logger.info(obj)
         if not obj.is_agency:
             openid = get_openid_from_header(self.request)
-            print(openid, 'CompanyAgencyViewSet :get_object')
+            logger.info('CompanyAgencyViewSet :get_object:{}'.format(openid))
             if openid:
                 user = get_user(openid)
-                if user.openid == obj.openid:
+                if user.openid == obj.office_openid:
                     return obj
 
-                if user and user.is_super:      # is_super[ 1 为超级用户可以代理授权]
-                    client = get_user(obj.openid)
-                    obj.is_agency = 1
-                    obj.save()
-                    if client:
-                        client.member_role_id = 2
-                        client.save()
-                else:
-                    msg = {
-                        "status_code": status.HTTP_401_UNAUTHORIZED,
-                        "message": "没有授权功能权限"
-                    }
-                    print(msg)
-                    raise exceptions.AuthenticationFailed(msg)
+                obj.openid = openid
+                obj.is_agency = 1
+                obj.save()
+
+                user.member_role_id = 2
+                user.save()
+
         return obj
 
 
