@@ -140,6 +140,8 @@ class CompanyContractViewSet(ModelViewSet):
                     obj.office_openid = openid
                     obj.office_man = user.name
                     obj.office_man_tel = user.telephone
+                    if user.member_role_id == 2:
+                        obj.category = 1
                     obj.save()
         return obj
 

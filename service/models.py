@@ -108,6 +108,10 @@ class PrivateContract(models.Model):
 
 class CompanyContract(models.Model):
     """公司合同"""
+    CATEGORY = (
+        (0, '双方合同'),
+        (1, '三方合同'),
+    )
     code = models.CharField(verbose_name='合同编号', max_length=16, blank=True, null=True)
     openid = models.CharField(verbose_name='微信ID', max_length=120, blank=True, null=True)
     name = models.CharField(verbose_name='公司名称', max_length=64)
@@ -128,6 +132,7 @@ class CompanyContract(models.Model):
     is_success = models.BooleanField(verbose_name='生效确认', default=False)
     office_openid = models.CharField(verbose_name='业务人员微信ID', max_length=120, blank=True, null=True)
     money = models.IntegerField(verbose_name='合同金额', default=0)
+    category = models.IntegerField(verbose_name='合同类型', default=0, choices=CATEGORY)
     # picture = models.ImageField(verbose_name='合同文本', upload_to="contract/", blank=True, null=True)
     update_time = models.DateTimeField(verbose_name='修改时间', auto_now=True)
     add_time = models.DateTimeField(verbose_name='添加时间', auto_now_add=True)
@@ -178,9 +183,14 @@ class CompanyContract(models.Model):
 
 class ContractAmount(models.Model):
     """合同金额列表"""
+    CATEGORY = (
+        (0, '无'),
+        (1, '第三方代理'),
+    )
     money = models.IntegerField(verbose_name='金额', default=0)
     desc = models.CharField(verbose_name='说明', max_length=256, blank=True, null=True)
     sort = models.IntegerField(verbose_name='排序', default=0)
+    category = models.IntegerField(verbose_name='类型', default=0, choices=CATEGORY)
     add_time = models.DateTimeField(verbose_name='添加时间', auto_now_add=True)
 
     def __str__(self):
