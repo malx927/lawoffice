@@ -89,18 +89,18 @@ class PrivateContractViewSet(ModelViewSet):
 
     def get_object(self):
         obj = super().get_object()
-        print('get_object', obj.name)
-        if not obj.is_success:
-            openid = get_openid_from_header(self.request)
-            print(openid, '::get_object')
-            if openid:
-                user = get_user(openid)
-                print(user, user.member_role_id)
-                if user and user.member_role_id in [1, 3]:  # 销售人员/律师
-                    obj.office_openid = openid
-                    obj.office_man = user.name
-                    obj.office_man_tel = user.telephone
-                    obj.save()
+        # print('get_object', obj.name)
+        # if not obj.is_success:
+        #     openid = get_openid_from_header(self.request)
+        #     print(openid, '::get_object')
+        #     if openid:
+        #         user = get_user(openid)
+        #         print(user, user.member_role_id)
+        #         if user and user.member_role_id:
+        #             obj.office_openid = openid
+        #             obj.office_man = user.name
+        #             obj.office_man_tel = user.telephone
+        #             obj.save()
         return obj
 
 
@@ -131,18 +131,18 @@ class CompanyContractViewSet(ModelViewSet):
 
     def get_object(self):
         obj = super().get_object()
-        if not obj.is_success:
-            openid = get_openid_from_header(self.request)
-            logger.info('CompanyContractViewSet :get_object:{}'.format(openid))
-            if openid:
-                user = get_user(openid)
-                if user and user.member_role_id in [1, 2, 3]:      # member_role[ 2 为法律顾问代理]
-                    obj.office_openid = openid
-                    obj.office_man = user.name
-                    obj.office_man_tel = user.telephone
-                    if user.member_role_id == 2:
-                        obj.category = 1
-                    obj.save()
+        # if not obj.is_success:
+        #     openid = get_openid_from_header(self.request)
+        #     logger.info('CompanyContractViewSet :get_object:{}'.format(openid))
+        #     if openid:
+        #         user = get_user(openid)
+        #         if user and user.member_role_id in [1, 2, 3]:      # member_role[ 2 为法律顾问代理]
+        #             obj.office_openid = openid
+        #             obj.office_man = user.name
+        #             obj.office_man_tel = user.telephone
+        #             if user.member_role_id == 2:
+        #                 obj.category = 1
+        #             obj.save()
         return obj
 
 

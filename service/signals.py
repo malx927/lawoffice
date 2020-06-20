@@ -23,10 +23,10 @@ def update_company_info(sender, instance, created, **kwargs):
     if instance.openid:
         company_info = {
             'name': instance.name,
-            'telephone': instance.telephone,
-            'credit_code': instance.credit_code,
-            'address': instance.address,
-            'legal_person': instance.legal_person,
+            # 'telephone': instance.telephone,
+            # 'credit_code': instance.credit_code,
+            # 'address': instance.address,
+            # 'legal_person': instance.legal_person,
             'contact_person': instance.contact_person,
             'contact_tel': instance.contact_tel,
         }

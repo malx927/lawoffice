@@ -70,7 +70,6 @@ class CompanyContractSerializer(ModelSerializer):
     """
     show_code = serializers.SerializerMethodField(read_only=True)
     is_effect = serializers.SerializerMethodField(read_only=True)
-    agency_name = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = CompanyContract
@@ -90,14 +89,3 @@ class CompanyContractSerializer(ModelSerializer):
         else:
             return '未生效'
 
-    def get_agency_name(self, obj):
-        print(obj, "000000000000000")
-        if obj.category == 1:
-            print(obj.category, "1111")
-            agency = CompanyInfo.objects.filter(openid=obj.office_openid, is_agency=1).first()
-            print(agency)
-            if agency:
-                print(agency.name)
-                return agency.name
-
-        return ""

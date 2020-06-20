@@ -12,8 +12,8 @@ class PersonInfoAdmin(admin.ModelAdmin):
 
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(admin.ModelAdmin):
-    list_display = ['name', 'credit_code', 'address', 'legal_person', 'telephone', 'contact_person', 'contact_tel', 'add_time']
-    search_fields = ['name', 'telephone', 'credit_code', 'contact_tel', 'legal_person', 'contact_person']
+    list_display = ['name', 'contact_person', 'contact_tel', 'add_time']
+    search_fields = ['name', 'contact_tel', 'contact_person']
     list_filter = ['add_time']
 
 
@@ -44,8 +44,8 @@ class PrivateContractAdmin(admin.ModelAdmin):
 @admin.register(CompanyContract)
 class CompanyContractAdmin(admin.ModelAdmin):
 
-    list_display = ['code', 'name', 'credit_code', 'address', 'legal_person', 'telephone', 'start_date', 'end_date', 'is_success']
-    search_fields = ['code', 'name', 'telephone', 'credit_code', 'contact_tel', 'legal_person', 'contact_person']
+    list_display = ['code', 'name', 'contact_person', 'contact_tel', 'start_date', 'end_date', 'is_success']
+    search_fields = ['code', 'name', 'contact_person', 'contact_tel']
     list_filter = ['is_success']
     # readonly_fields = ['code']
 
@@ -54,11 +54,11 @@ class CompanyContractAdmin(admin.ModelAdmin):
             'fields': ('code', ('start_date', 'end_date'))
         }),
         ('公司信息', {
-            'fields': (('name', 'credit_code'), 'address', ('legal_person', 'telephone'), ('contact_person', 'contact_tel'))
+            'fields': ('name', 'contact_person', 'contact_tel')
         }),
         ('律所信息', {
             'classes': ('collapse',),
-            'fields': (('office_name', 'office_code'), ('office_man', 'office_man_tel'), 'office_address')
+            'fields': ('office_name', 'office_man', 'office_man_tel', 'office_address')
         }),
         ('其他信息', {
             'classes': ('collapse',),

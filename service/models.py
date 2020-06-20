@@ -31,10 +31,10 @@ class CompanyInfo(models.Model):
     )
     openid = models.CharField(verbose_name='微信ID', max_length=120, blank=True, null=True)
     name = models.CharField(verbose_name='公司名称', max_length=64)
-    credit_code = models.CharField(verbose_name='信用代码', max_length=24)
-    address = models.CharField(verbose_name='公司地址', max_length=128)
-    legal_person = models.CharField(verbose_name='法人代表', max_length=24)
-    telephone = models.CharField(verbose_name='联系方式', max_length=64)
+    # credit_code = models.CharField(verbose_name='信用代码', max_length=24)
+    # address = models.CharField(verbose_name='公司地址', max_length=128)
+    # legal_person = models.CharField(verbose_name='法人代表', max_length=24)
+    # telephone = models.CharField(verbose_name='联系方式', max_length=64)
     contact_person = models.CharField(verbose_name='联系人', max_length=32)
     contact_tel = models.CharField(verbose_name='联系方式', max_length=64)
     office_openid = models.CharField(verbose_name='授权微信ID', max_length=120, blank=True, null=True)
@@ -96,12 +96,18 @@ class PrivateContract(models.Model):
     def save(self, *args, **kwargs):
 
         if self.code is None:
-            code = PrivateContract.get_max_code()
+            code = self.__class__.get_max_code()
             self.code = code
 
         office = Office.objects.first()
         if office:
             self.office_tel = office.telephone
+
+        if self.office_openid and self.office_man is None:
+            user = WxUserInfo.objects.filter(openid=self.office_openid).first()
+            if user:
+                self.office_man = user.name
+                self.office_man_tel = user.telephone
 
         return super().save(*args, **kwargs)
 
@@ -110,19 +116,19 @@ class CompanyContract(models.Model):
     """公司合同"""
     CATEGORY = (
         (0, '双方合同'),
-        (1, '三方合同'),
+        (1, '代理合同'),
     )
     code = models.CharField(verbose_name='合同编号', max_length=16, blank=True, null=True)
     openid = models.CharField(verbose_name='微信ID', max_length=120, blank=True, null=True)
     name = models.CharField(verbose_name='公司名称', max_length=64)
-    credit_code = models.CharField(verbose_name='信用代码', max_length=24)
-    address = models.CharField(verbose_name='公司地址', max_length=128)
-    legal_person = models.CharField(verbose_name='法人代表', max_length=24)
-    telephone = models.CharField(verbose_name='联系电话', max_length=64)
+    # credit_code = models.CharField(verbose_name='信用代码', max_length=24)
+    # address = models.CharField(verbose_name='公司地址', max_length=128)
+    # legal_person = models.CharField(verbose_name='法人代表', max_length=24)
+    # telephone = models.CharField(verbose_name='联系电话', max_length=64)
     contact_person = models.CharField(verbose_name='联系人', max_length=32)
     contact_tel = models.CharField(verbose_name='联系电话', max_length=64)
     office_name = models.CharField(verbose_name='律师名称', max_length=64, blank=True, null=True)
-    office_code = models.CharField(verbose_name='信用代码', max_length=24, blank=True, null=True)
+    # office_code = models.CharField(verbose_name='信用代码', max_length=24, blank=True, null=True)
     office_man = models.CharField(verbose_name='联系人', max_length=16, blank=True, null=True)
     office_man_tel = models.CharField(verbose_name='联系电话', max_length=24, blank=True, null=True)
     office_address = models.CharField(verbose_name='地址', max_length=128, blank=True, null=True)
@@ -161,7 +167,7 @@ class CompanyContract(models.Model):
 
     def save(self, *args, **kwargs):
         if self.code is None:
-            code = CompanyContract.get_max_code()
+            code = self.__class__.get_max_code()
             self.code = code
 
         office = Office.objects.first()
@@ -172,11 +178,12 @@ class CompanyContract(models.Model):
                 self.office_address = office.address
                 self.office_tel = office.telephone
 
-        # if self.office_openid:
-        #     office_user = WxUserInfo.objects.filter(openid=self.office_openid).first()
-        #     if office_user:
-        #         self.office_man = office_user.name
-        #         self.office_man_tel = office_user.telephone
+        if self.office_openid:
+            office_user = WxUserInfo.objects.filter(openid=self.office_openid).first()
+            if office_user:
+                self.office_man = office_user.name
+                self.office_man_tel = office_user.telephone
+                self.category = 1 if office_user.member_role_id == 2 else 0
 
         return super().save(*args, **kwargs)
 
