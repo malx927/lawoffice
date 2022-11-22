@@ -7,7 +7,7 @@ Markdown==3.2.2
 mysqlclient==1.4.6
 PyJWT==1.7.1
 wechatpy==1.8.13
-Pillow==7.1.2
+Pillow==9.3.0
 redis==3.5.2
 aliyun-python-sdk-core-v3==2.13.11
 django-simpleui==4.0.2
